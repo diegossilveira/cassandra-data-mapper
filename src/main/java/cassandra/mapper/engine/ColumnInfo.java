@@ -11,15 +11,18 @@ class ColumnInfo {
 	private final Transformer transformer;
 
 	ColumnInfo(Field field, Transformer transformer) {
+		
 		this.field = field;
 		this.transformer = transformer;
 	}
 
 	Field field() {
+		
 		return field;
 	}
 
 	Transformer transformer() {
+		
 		return transformer;
 	}
 

@@ -12,20 +12,24 @@ class IndexInfo {
 	private final IndexTransformer transformer;
 
 	IndexInfo(Field field, String indexColumnFamily, IndexTransformer transformer) {
+		
 		this.field = field;
 		this.indexColumnFamily = indexColumnFamily;
 		this.transformer = transformer;
 	}
 
 	Field field() {
+		
 		return field;
 	}
 
 	IndexTransformer transformer() {
+		
 		return transformer;
 	}
 
 	String indexColumnFamily() {
+		
 		return indexColumnFamily;
 	}
 
