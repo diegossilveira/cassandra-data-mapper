@@ -33,12 +33,16 @@ public final class HectorCommons {
 
 	private static CassandraColumn convert(HColumn<String, byte[]> column) {
 
-		return new CassandraColumn(column.getName(), column.getValue());
+		CassandraColumn cassandraColumn = new CassandraColumn(column.getName(), column.getValue());
+		cassandraColumn.setTimestamp(column.getTimestamp());
+		return cassandraColumn;
 	}
 
 	private static CassandraIndexColumn convertIndex(HColumn<UUID, UUID> column) {
 
-		return new CassandraIndexColumn(column.getName(), column.getValue());
+		CassandraIndexColumn cassandraIndexColumn = new CassandraIndexColumn(column.getName(), column.getValue());
+		cassandraIndexColumn.setTimestamp(column.getTimestamp());
+		return cassandraIndexColumn;
 	}
 
 	static <E> E buildEntity(ColumnSlice<String, byte[]> slice, UUID key, EntityProcessor<E> processor) {
