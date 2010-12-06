@@ -8,11 +8,23 @@
 	<packaging>jar</packaging>
 
 	<name>cassandra-data-mapper</name>
-	<url>http://maven.apache.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<developers>
+        <developer>
+            <name>Diego Silveira</name>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git://github.com/diegossilveira/cassandra-data-mapper.git</connection>
+        <url>https://github.com/diegossilveira/cassandra-data-mapper</url>
+    </scm>
 
 	<repositories>
 

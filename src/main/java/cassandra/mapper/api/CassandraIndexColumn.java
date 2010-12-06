@@ -7,6 +7,8 @@ public class CassandraIndexColumn {
 	private final UUID indexer;
 
 	private final UUID indexedKey;
+	
+	private long timestamp;
 
 	public CassandraIndexColumn(UUID indexer, UUID indexedKey) {
 		this.indexer = indexer;
@@ -19,6 +21,14 @@ public class CassandraIndexColumn {
 
 	public UUID indexedKey() {
 		return indexedKey;
+	}
+
+	public long timestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	@Override

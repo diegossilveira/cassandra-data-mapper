@@ -255,7 +255,7 @@ public class HectorBasedMapper implements IndexedMapper {
 
 			EntityProcessor<E> processor = processor(clazz);
 			SliceQuery<UUID, UUID> query = HFactory.createSliceQuery(keyspace(clazz), uuidSerializer,
-					new UUIDDeserializer());
+					uuidSerializer);
 			query.setColumnFamily(processor.getIndexColumnFamily(indexName));
 			query.setRange(initialIndexer, null, false, size);
 			query.setKey(indexKey);

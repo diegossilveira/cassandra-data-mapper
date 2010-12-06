@@ -7,6 +7,8 @@ public class CassandraColumn {
 	private final String name;
 
 	private final byte[] value;
+	
+	private long timestamp;
 
 	public CassandraColumn(String name, Object value, Transformer valueTransformer) {
 		this.name = name;
@@ -24,6 +26,14 @@ public class CassandraColumn {
 
 	public byte[] value() {
 		return value;
+	}
+
+	public long timestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	@Override
