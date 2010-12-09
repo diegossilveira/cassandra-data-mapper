@@ -66,6 +66,7 @@ public class HectorBasedMapper implements IndexedMapper {
 			Collection<CassandraColumn> columns = processor.getCassandraColumns(entity);
 
 			UUID key = processor.getKey(entity);
+			logger.info("Storing with id " + key.toString());
 
 			for (CassandraColumn column : columns) {
 				mutator.addInsertion(key.toString(), processor.getColumnFamily(),

@@ -20,13 +20,21 @@ public class CassandraRange<E> {
 	public UUID nextKey() {
 		return nextKey;
 	}
-	
+
 	public boolean hasNextKey() {
 		return nextKey != null;
 	}
-	
+
 	public int size() {
 		return elements.size();
+	}
+
+	public boolean isEmpty() {
+		return elements.isEmpty();
+	}
+
+	public boolean gotLastKey() {
+		return !isEmpty() && !hasNextKey();
 	}
 
 }
