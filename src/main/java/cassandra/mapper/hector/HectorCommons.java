@@ -44,6 +44,11 @@ public final class HectorCommons {
 		cassandraIndexColumn.setTimestamp(column.getTimestamp());
 		return cassandraIndexColumn;
 	}
+	
+	private static boolean mustIgnoreKey(UUID ignoredKey, String rowKey) {
+		
+		return ignoredKey != null && ignoredKey.toString().equals(rowKey);
+	}
 
 	static <E> E buildEntity(ColumnSlice<String, byte[]> slice, UUID key, EntityProcessor<E> processor) {
 
@@ -65,7 +70,7 @@ public final class HectorCommons {
 
 		while (iterator.hasNext()) {
 			Row<String, byte[]> row = iterator.next();
-			if (!row.getKey().equals(ignoredKey)) {
+			if (!mustIgnoreKey(ignoredKey, row.getKey())) {
 				E entity = buildEntity(row.getColumnSlice(), UUID.fromString(row.getKey()), processor);
 				entities.add(entity);
 			}
