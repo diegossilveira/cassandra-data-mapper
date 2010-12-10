@@ -120,19 +120,6 @@ public class MapperTest {
 	@Test
 	public void testFindingByRange() {
 
-		String[] names = new String[] { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth",
-				"nineth", "tenth" };
-		for (int i = 0; i < 10; i++) {
-			Comment comment = new Comment(toUUID(i + 1), "Diego Silveira", "My " + names[i%10] + " comment");
-			mapper.store(comment);
-		}
-
-		Comment comment = new Comment(toUUID(11), "Lorena Bittencourt", "Hello Diego! Great comments!");
-		mapper.store(comment);
-
-		comment = new Comment(toUUID(12), "Nayara Silveira", "@LorenaBittencourt blah blah blah!");
-		mapper.store(comment);
-
 		UUID nextKey = null;
 		CassandraRange<Comment> range = mapper.findByRange(nextKey, Comment.class, 1);
 		long count = 0;
