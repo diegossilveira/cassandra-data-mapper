@@ -16,7 +16,7 @@ public interface Mapper {
 	 * @param entity
 	 * @throws CassandraMapperException
 	 */
-	<E> void store(E entity);
+	<E> UUID store(E entity);
 
 	/**
 	 * Finds the entity with given key in Cassandra

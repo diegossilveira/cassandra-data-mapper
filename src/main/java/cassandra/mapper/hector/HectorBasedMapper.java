@@ -55,7 +55,7 @@ public class HectorBasedMapper implements IndexedMapper {
 	}
 
 	@Override
-	public <E> void store(E entity) {
+	public <E> UUID store(E entity) {
 
 		logger.debug("Storing entity");
 
@@ -73,12 +73,14 @@ public class HectorBasedMapper implements IndexedMapper {
 						HFactory.createColumn(column.name(), column.value(), stringSerializer, byteSerializer));
 			}
 			mutator.execute();
+			
+			logger.debug("Successfuly stored entity");
+			
+			return key;
 
 		} catch (Exception ex) {
 			throw new CassandraMapperException("Error while storing entity", ex);
 		}
-
-		logger.debug("Successfuly stored entity");
 	}
 
 	@Override
