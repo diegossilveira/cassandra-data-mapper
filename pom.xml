@@ -112,12 +112,12 @@
 	<distributionManagement>
 
 		<repository>
-			<id>diegossilveira-maven-repo</id>
+			<id>repo</id>
 			<url>http://github.com/diegossilveira/maven-repo/raw/master/releases</url>
 		</repository>
 
 		<snapshotRepository>
-			<id>diegossilveira-maven-snapshot-repo</id>
+			<id>snapshot-repo</id>
 			<url>http://github.com/diegossilveira/maven-repo/raw/master/snapshots</url>
 		</snapshotRepository>
 
