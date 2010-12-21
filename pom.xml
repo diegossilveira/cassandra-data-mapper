@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cassandra-mapper</groupId>
+	<groupId>cassandra-data-mapper</groupId>
 	<artifactId>cassandra-data-mapper</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
@@ -12,19 +12,19 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<developers>
-        <developer>
-            <name>Diego Silveira</name>
-            <roles>
-                <role>Project Lead</role>
-            </roles>
-        </developer>
-    </developers>
-    <scm>
-        <connection>scm:git://github.com/diegossilveira/cassandra-data-mapper.git</connection>
-        <url>https://github.com/diegossilveira/cassandra-data-mapper</url>
-    </scm>
+		<developer>
+			<name>Diego Silveira</name>
+			<roles>
+				<role>Project Lead</role>
+			</roles>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git://github.com/diegossilveira/cassandra-data-mapper.git</connection>
+		<url>https://github.com/diegossilveira/cassandra-data-mapper</url>
+	</scm>
 
 	<repositories>
 
@@ -108,4 +108,20 @@
 		</dependency>
 
 	</dependencies>
+
+	<distributionManagement>
+
+		<repository>
+			<id>diegossilveira-maven-repo</id>
+			<url>http://github.com/diegossilveira/maven-repo/raw/master/releases</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>diegossilveira-maven-snapshot-repo</id>
+			<url>http://github.com/diegossilveira/maven-repo/raw/master/snapshots</url>
+		</snapshotRepository>
+
+	</distributionManagement>
+
+
 </project>
