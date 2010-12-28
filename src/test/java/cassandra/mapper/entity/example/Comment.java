@@ -1,14 +1,15 @@
 package cassandra.mapper.entity.example;
 
+import java.util.Date;
 import java.util.UUID;
 
 import cassandra.mapper.api.annotation.Column;
 import cassandra.mapper.api.annotation.Entity;
 import cassandra.mapper.api.annotation.Index;
 import cassandra.mapper.api.annotation.Key;
+import cassandra.mapper.transformer.DateTransformer;
 
-
-@Entity(keyspace = "KeyspaceTest", columnFamily = "Comment")
+@Entity(keyspace = "CommentKeyspace", columnFamily = "Comment")
 public class Comment {
 
 	@Key
@@ -18,6 +19,8 @@ public class Comment {
 	private final String author;
 	@Column
 	private String text;
+	@Column(transformer=DateTransformer.class)
+	private final Date date = new Date();
 
 	public Comment() {
 		this(null, "");
@@ -47,6 +50,10 @@ public class Comment {
 
 	public String text() {
 		return this.text;
+	}
+
+	public Date date() {
+		return date;
 	}
 
 	@Override

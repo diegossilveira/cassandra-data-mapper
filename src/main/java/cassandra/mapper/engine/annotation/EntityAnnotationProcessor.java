@@ -1,4 +1,4 @@
-package cassandra.mapper.engine;
+package cassandra.mapper.engine.annotation;
 
 import org.apache.cassandra.thrift.ConsistencyLevel;
 
@@ -13,7 +13,7 @@ public class EntityAnnotationProcessor {
 	private final ConsistencyLevel writeConsistencyLevel;
 	private final ConsistencyLevel readConsistencyLevel;
 	
-	EntityAnnotationProcessor(Class<?> clazz) {
+	public EntityAnnotationProcessor(Class<?> clazz) {
 
 		Entity annotation = clazz.getAnnotation(Entity.class);
 		if (annotation == null) {
@@ -26,22 +26,22 @@ public class EntityAnnotationProcessor {
 		readConsistencyLevel = annotation.readConsistencyLevel();
 	}
 	
-	String keyspace() {
+	public String keyspace() {
 
 		return keyspace;
 	}
 	
-	String columnFamily() {
+	public String columnFamily() {
 		
 		return columnFamily;
 	}
 
-	ConsistencyLevel writeConsistencyLevel() {
+	public ConsistencyLevel writeConsistencyLevel() {
 		
 		return writeConsistencyLevel;
 	}
 
-	ConsistencyLevel readConsistencyLevel() {
+	public ConsistencyLevel readConsistencyLevel() {
 
 		return readConsistencyLevel;
 	}

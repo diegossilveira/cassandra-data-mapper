@@ -1,6 +1,7 @@
 package cassandra.mapper.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-import cassandra.mapper.api.CassandraCluster;
-import cassandra.mapper.api.CassandraConfiguration;
-import cassandra.mapper.api.CassandraNode;
-import cassandra.mapper.api.CassandraRange;
-import cassandra.mapper.api.Mapper;
 import cassandra.mapper.entity.example.Comment;
 import cassandra.mapper.hector.HectorBasedMapper;
 
@@ -33,7 +29,6 @@ public class MapperTest {
 		CassandraCluster cluster = new CassandraCluster("TQI-cluster", configuration);
 		cluster.addNode(new CassandraNode("10.10.0.69", 9160));
 		cluster.addNode(new CassandraNode("10.10.0.70", 9160));
-		cluster.addNode(new CassandraNode("10.10.0.71", 9160));
 
 		mapper = new HectorBasedMapper(cluster);
 	}
@@ -51,7 +46,7 @@ public class MapperTest {
 		mapper.remove(comment);
 	}
 
-	// @Test
+	//@Test
 	public void testSerialMassiveStore() {
 
 		for (int i = 1; i <= 100; i++) {
@@ -59,7 +54,7 @@ public class MapperTest {
 			mapper.store(comment);
 		}
 
-		CassandraRange<Comment> range = mapper.findByRange(toUUID(1), Comment.class, 100);
+		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100);
 		assertEquals(100, range.size());
 
 		for (int i = 1; i <= 100; i++) {
@@ -117,7 +112,7 @@ public class MapperTest {
 		assertEquals(5, list.size());
 	}
 
-	@Test
+	//@Test
 	public void testFindingByRange() {
 
 		UUID nextKey = null;
@@ -130,6 +125,23 @@ public class MapperTest {
 		}
 		System.out.println(count);
 		assertTrue(count > 0);
+	}
+	
+	@Test
+	public void testProxy() {
+		
+		for (int i = 1; i <= 100; i++) {
+			Comment comment = new Comment(toUUID(i), "diegossilveira", "Comentario de Teste " + i);
+			mapper.store(comment);
+		}
+		
+		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, true);
+		for(Comment comment : range.elements()) {
+			comment.text();
+			comment.date();
+		}
+		
+		assertEquals(100, range.size());
 	}
 
 }

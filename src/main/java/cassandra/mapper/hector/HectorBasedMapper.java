@@ -34,7 +34,6 @@ import cassandra.mapper.api.exception.CassandraMapperException;
 import cassandra.mapper.engine.EntityProcessor;
 import cassandra.mapper.engine.EntityProcessorFactory;
 
-
 public class HectorBasedMapper implements IndexedMapper {
 
 	private final Cluster cluster;
@@ -73,9 +72,9 @@ public class HectorBasedMapper implements IndexedMapper {
 						HFactory.createColumn(column.name(), column.value(), stringSerializer, byteSerializer));
 			}
 			mutator.execute();
-			
+
 			logger.debug("Successfuly stored entity");
-			
+
 			return key;
 
 		} catch (Exception ex) {
@@ -86,19 +85,23 @@ public class HectorBasedMapper implements IndexedMapper {
 	@Override
 	public <E> E findByKey(UUID key, Class<E> clazz) {
 
+		return findByKey(key, clazz, false);
+	}
+
+	@Override
+	public <E> E findByKey(UUID key, Class<E> clazz, boolean lazy) {
+
 		logger.debug("Finding entity with key " + key);
 
 		try {
 
 			EntityProcessor<E> processor = processor(clazz);
-			SliceQuery<String, byte[]> query = HFactory.createSliceQuery(keyspace(clazz), stringSerializer,
-					byteSerializer);
-			query.setColumnFamily(processor.getColumnFamily()).setKey(key.toString())
-					.setColumnNames(processor.getColumnNames());
+			SliceQuery<String, byte[]> query = HFactory.createSliceQuery(keyspace(clazz), stringSerializer, byteSerializer);
+			query.setColumnFamily(processor.getColumnFamily()).setKey(key.toString()).setColumnNames(processor.getColumnNames());
 
 			QueryResult<ColumnSlice<String, byte[]>> result = query.execute();
 
-			return HectorCommons.buildEntity(result.get(), key, processor);
+			return HectorCommons.buildEntity(result.get(), key, processor, lazy);
 
 		} catch (Exception ex) {
 			throw new CassandraMapperException("Error while retrieving key", ex);
@@ -108,20 +111,25 @@ public class HectorBasedMapper implements IndexedMapper {
 	@Override
 	public <E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz) {
 
+		return findByKeys(keys, clazz, false);
+	}
+
+	@Override
+	public <E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz, boolean lazy) {
+
 		logger.debug("Finding entities with keys " + keys);
 
 		try {
 
 			EntityProcessor<E> processor = processor(clazz);
-			MultigetSliceQuery<String, byte[]> query = HFactory.createMultigetSliceQuery(keyspace(clazz),
-					stringSerializer, byteSerializer);
+			MultigetSliceQuery<String, byte[]> query = HFactory.createMultigetSliceQuery(keyspace(clazz), stringSerializer, byteSerializer);
 			query.setColumnFamily(processor.getColumnFamily());
 			query.setKeys(HectorCommons.toStringKeys(keys));
 			query.setRange(EMPTY_COLUMN, EMPTY_COLUMN, false, processor.getColumnCount());
 
 			QueryResult<Rows<String, byte[]>> result = query.execute();
 
-			return HectorCommons.buildEntities(result.get(), null, processor);
+			return HectorCommons.buildEntities(result.get(), null, processor, lazy);
 
 		} catch (Exception ex) {
 			throw new CassandraMapperException("Error while retrieving keys", ex);
@@ -131,13 +139,18 @@ public class HectorBasedMapper implements IndexedMapper {
 	@Override
 	public <E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size) {
 
+		return findByRange(initialKey, clazz, size, false);
+	}
+
+	@Override
+	public <E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size, boolean lazy) {
+
 		logger.debug("Finding entities within range starting at key " + initialKey);
 
 		try {
 
 			EntityProcessor<E> processor = processor(clazz);
-			RangeSlicesQuery<String, byte[]> query = HFactory.createRangeSlicesQuery(keyspace(clazz), stringSerializer,
-					byteSerializer);
+			RangeSlicesQuery<String, byte[]> query = HFactory.createRangeSlicesQuery(keyspace(clazz), stringSerializer, byteSerializer);
 			query.setColumnFamily(processor.getColumnFamily());
 			query.setKeys(initialKey == null ? "" : initialKey.toString(), EMPTY_KEY);
 			query.setRange(EMPTY_COLUMN, EMPTY_COLUMN, false, processor.getColumnCount());
@@ -153,7 +166,7 @@ public class HectorBasedMapper implements IndexedMapper {
 				logger.debug("Next key is " + lastKey);
 			}
 
-			List<E> list = HectorCommons.buildEntities(rows, lastKey, processor);
+			List<E> list = HectorCommons.buildEntities(rows, lastKey, processor, lazy);
 
 			return new CassandraRange<E>(list, lastKey);
 
@@ -248,17 +261,17 @@ public class HectorBasedMapper implements IndexedMapper {
 
 		return findIndexedColumns(clazz, indexName, indexKey, null, Integer.MAX_VALUE);
 	}
-	
+
 	@Override
-	public <E> List<CassandraIndexColumn> findIndexedColumns(Class<E> clazz, String indexName, String indexKey, UUID initialIndexer, int size) {
+	public <E> List<CassandraIndexColumn> findIndexedColumns(Class<E> clazz, String indexName, String indexKey, UUID initialIndexer,
+			int size) {
 
 		logger.debug("Finding indexed keys");
 
 		try {
 
 			EntityProcessor<E> processor = processor(clazz);
-			SliceQuery<UUID, UUID> query = HFactory.createSliceQuery(keyspace(clazz), uuidSerializer,
-					uuidSerializer);
+			SliceQuery<UUID, UUID> query = HFactory.createSliceQuery(keyspace(clazz), uuidSerializer, uuidSerializer);
 			query.setColumnFamily(processor.getIndexColumnFamily(indexName));
 			query.setRange(initialIndexer, null, false, size);
 			query.setKey(indexKey);

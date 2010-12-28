@@ -28,6 +28,17 @@ public interface Mapper {
 	 * @throws CassandraMapperException
 	 */
 	<E> E findByKey(UUID key, Class<E> clazz);
+	
+	/**
+	 * Finds the entity with given key in Cassandra
+	 * 
+	 * @param <E>
+	 * @param key
+	 * @param clazz
+	 * @param lazy
+	 * @return
+	 */
+	<E> E findByKey(UUID key, Class<E> clazz, boolean lazy);
 
 	/**
 	 * Finds all entities with given keys in Cassandra
@@ -39,6 +50,17 @@ public interface Mapper {
 	 * @throws CassandraMapperException
 	 */
 	<E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz);
+	
+	/**
+	 * Finds all entities with given keys in Cassandra
+	 * 
+	 * @param <E>
+	 * @param keys
+	 * @param clazz
+	 * @param lazy
+	 * @return
+	 */
+	<E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz, boolean lazy);
 
 	/**
 	 * Finds a range of contiguous keys in Cassandra, starting from a given initialKey. With null initialKey, the range
@@ -52,6 +74,19 @@ public interface Mapper {
 	 * @throws CassandraMapperException
 	 */
 	<E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size);
+	
+	/**
+	 * Finds a range of contiguous keys in Cassandra, starting from a given initialKey. With null initialKey, the range
+	 * starts from the beginning. The order is not guaranteed, unless using OrderPreservingPartitioner.
+	 * 
+	 * @param <E>
+	 * @param initialKey
+	 * @param clazz
+	 * @param size
+	 * @param lazy
+	 * @return
+	 */
+	<E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size, boolean lazy);
 
 	/**
 	 * Removes an entity from Cassandra. Depending on implementation, the Row associated with the entity's key may

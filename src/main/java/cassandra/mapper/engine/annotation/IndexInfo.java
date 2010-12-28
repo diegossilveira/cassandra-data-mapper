@@ -1,4 +1,4 @@
-package cassandra.mapper.engine;
+package cassandra.mapper.engine.annotation;
 
 import java.lang.reflect.Field;
 

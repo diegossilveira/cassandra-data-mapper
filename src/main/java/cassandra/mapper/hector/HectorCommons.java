@@ -50,7 +50,7 @@ public final class HectorCommons {
 		return ignoredKey != null && ignoredKey.toString().equals(rowKey);
 	}
 
-	static <E> E buildEntity(ColumnSlice<String, byte[]> slice, UUID key, EntityProcessor<E> processor) {
+	static <E> E buildEntity(ColumnSlice<String, byte[]> slice, UUID key, EntityProcessor<E> processor, boolean lazy) {
 
 		logger.debug("Deserializing entity with key " + key);
 		
@@ -60,10 +60,10 @@ public final class HectorCommons {
 			columns.add(convert(column));
 		}
 
-		return processor.getCassandraEntity(key, columns);
+		return processor.getCassandraEntity(key, columns, lazy);
 	}
 
-	static <E> List<E> buildEntities(Rows<String, byte[]> rows, UUID ignoredKey, EntityProcessor<E> processor) {
+	static <E> List<E> buildEntities(Rows<String, byte[]> rows, UUID ignoredKey, EntityProcessor<E> processor, boolean lazy) {
 
 		List<E> entities = new ArrayList<E>();
 		Iterator<Row<String, byte[]>> iterator = rows.iterator();
@@ -71,7 +71,7 @@ public final class HectorCommons {
 		while (iterator.hasNext()) {
 			Row<String, byte[]> row = iterator.next();
 			if (!mustIgnoreKey(ignoredKey, row.getKey())) {
-				E entity = buildEntity(row.getColumnSlice(), UUID.fromString(row.getKey()), processor);
+				E entity = buildEntity(row.getColumnSlice(), UUID.fromString(row.getKey()), processor, lazy);
 				entities.add(entity);
 			}
 		}

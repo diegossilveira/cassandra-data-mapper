@@ -1,4 +1,4 @@
-package cassandra.mapper.engine;
+package cassandra.mapper.engine.annotation;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -10,11 +10,11 @@ import cassandra.mapper.api.exception.CassandraEngineException;
 import cassandra.mapper.engine.utils.ReflectionUtils;
 
 
-class IndexAnnotationProcessor {
+public class IndexAnnotationProcessor {
 
 	private final Map<String, IndexInfo> indexInformation;
 
-	IndexAnnotationProcessor(Class<?> clazz) {
+	public IndexAnnotationProcessor(Class<?> clazz) {
 
 		indexInformation = new HashMap<String, IndexInfo>();
 		for (Field field : ReflectionUtils.getAnnotatedFields(clazz, Index.class)) {
@@ -54,28 +54,28 @@ class IndexAnnotationProcessor {
 		return indexInfo;
 	}
 
-	String getIndexColumnFamily(String indexName) {
+	public String getIndexColumnFamily(String indexName) {
 
 		IndexInfo indexInfo = getIndexInfoForIndexName(indexName);
 		return indexInfo.indexColumnFamily();
 	}
 
-	Field getIndexField(String indexName) {
+	public Field getIndexField(String indexName) {
 		
 		return getIndexInfoForIndexName(indexName).field();
 	}
 	
-	IndexTransformer getIndexTransformer(String indexName) {
+	public IndexTransformer getIndexTransformer(String indexName) {
 		
 		return getIndexInfoForIndexName(indexName).transformer();
 	}
 	
-	String[] indexNames() {
+	public String[] indexNames() {
 
 		return indexInformation.keySet().toArray(new String[0]);
 	}
 
-	int indexCount() {
+	public int indexCount() {
 
 		return indexInformation.keySet().size();
 	}

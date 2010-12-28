@@ -12,9 +12,15 @@ import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.api.CassandraIndexColumn;
 import cassandra.mapper.api.Transformer;
 import cassandra.mapper.api.exception.CassandraEngineException;
+import cassandra.mapper.engine.annotation.ColumnAnnotationProcessor;
+import cassandra.mapper.engine.annotation.EntityAnnotationProcessor;
+import cassandra.mapper.engine.annotation.IndexAnnotationProcessor;
+import cassandra.mapper.engine.annotation.KeyAnnotationProcessor;
+import cassandra.mapper.engine.serialization.Deserializer;
+import cassandra.mapper.engine.serialization.EagerDeserializer;
+import cassandra.mapper.engine.serialization.LazyDeserializer;
 import cassandra.mapper.engine.utils.ReflectionUtils;
 import cassandra.mapper.engine.utils.TimeUUIDUtils;
-
 
 public final class EntityProcessor<T> {
 
@@ -34,16 +40,17 @@ public final class EntityProcessor<T> {
 		keyProcessor = new KeyAnnotationProcessor(clazz);
 	}
 
+	private Deserializer<T> deserializer(boolean lazy) {
+		if (lazy) {
+			return new LazyDeserializer<T>(clazz, columnProcessor, keyProcessor);
+		}
+		return new EagerDeserializer<T>(clazz, columnProcessor, keyProcessor);
+	}
+
 	private byte[] getFieldValueInBytes(T entity, Field field, Transformer transformer) {
 
 		Object value = ReflectionUtils.getFieldValue(field, entity);
 		return transformer.toBytes(value);
-	}
-
-	private void setFieldValueFromBytes(T entity, Field field, byte[] bytes, Transformer transformer) {
-
-		Object value = transformer.fromBytes(bytes);
-		ReflectionUtils.setFieldValue(field, entity, value);
 	}
 
 	public Collection<CassandraColumn> getCassandraColumns(T entity) {
@@ -69,17 +76,12 @@ public final class EntityProcessor<T> {
 
 	public T getCassandraEntity(UUID key, Collection<CassandraColumn> columns) {
 
-		T entity = ReflectionUtils.instantiate(clazz);
-		ReflectionUtils.setFieldValue(keyProcessor.keyField(), entity, key);
+		return getCassandraEntity(key, columns, false);
+	}
+	
+	public T getCassandraEntity(UUID key, Collection<CassandraColumn> columns, boolean lazy) {
 
-		for (CassandraColumn column : columns) {
-
-			Field columnField = columnProcessor.getColumnField(column.name());
-			Transformer transformer = columnProcessor.getColumnTransformer(column.name());
-			setFieldValueFromBytes(entity, columnField, column.value(), transformer);
-		}
-
-		return entity;
+		return deserializer(lazy).deserialize(key, columns);
 	}
 
 	public UUID getKey(T entity) {

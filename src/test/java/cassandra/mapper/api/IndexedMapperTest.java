@@ -1,22 +1,15 @@
 package cassandra.mapper.api;
 
+import static org.junit.Assert.assertFalse;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import cassandra.mapper.api.CassandraCluster;
-import cassandra.mapper.api.CassandraConfiguration;
-import cassandra.mapper.api.CassandraIndexColumn;
-import cassandra.mapper.api.CassandraNode;
-import cassandra.mapper.api.IndexedMapper;
 import cassandra.mapper.engine.utils.TimeUUIDUtils;
 import cassandra.mapper.entity.example.Comment;
 import cassandra.mapper.hector.HectorBasedMapper;
-
-
-import static org.junit.Assert.*;
 
 public class IndexedMapperTest {
 
@@ -29,7 +22,6 @@ public class IndexedMapperTest {
 		CassandraCluster cluster = new CassandraCluster("TQI-cluster", configuration);
 		cluster.addNode(new CassandraNode("10.10.0.69", 9160));
 		cluster.addNode(new CassandraNode("10.10.0.70", 9160));
-		cluster.addNode(new CassandraNode("10.10.0.71", 9160));
 
 		mapper = new HectorBasedMapper(cluster);
 	}

@@ -1,4 +1,4 @@
-package cassandra.mapper.engine;
+package cassandra.mapper.engine.annotation;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class ColumnAnnotationProcessor {
 
 	private Map<String, ColumnInfo> columnInformation;
 
-	ColumnAnnotationProcessor(Class<?> clazz) {
+	public ColumnAnnotationProcessor(Class<?> clazz) {
 
 		columnInformation = new HashMap<String, ColumnInfo>();
 		for (Field field : ReflectionUtils.getAnnotatedFields(clazz, Column.class)) {
@@ -23,7 +23,7 @@ public class ColumnAnnotationProcessor {
 		}
 	}
 
-	private String getColumnName(Field field) {
+	public  String getColumnName(Field field) {
 
 		Column annotation = field.getAnnotation(Column.class);
 		return "".equals(annotation.name()) ? field.getName() : annotation.name();
@@ -48,22 +48,22 @@ public class ColumnAnnotationProcessor {
 		return columnInfo;
 	}
 
-	Field getColumnField(String columnName) {
+	public Field getColumnField(String columnName) {
 
 		return getColumnInfoForColumnName(columnName).field();
 	}
 
-	Transformer getColumnTransformer(String columnName) {
+	public Transformer getColumnTransformer(String columnName) {
 
 		return getColumnInfoForColumnName(columnName).transformer();
 	}
 
-	String[] columnNames() {
+	public String[] columnNames() {
 
 		return columnInformation.keySet().toArray(new String[0]);
 	}
 
-	int columnCount() {
+	public int columnCount() {
 
 		return columnInformation.keySet().size();
 	}
