@@ -52,7 +52,8 @@ public final class EntityProcessor<T> {
 	private byte[] getFieldValueInBytes(T entity, Field field, Transformer transformer) {
 
 		Object value = ReflectionUtils.getFieldValue(field, entity);
-		return transformer.toBytes(value);
+		return value == null ? null : transformer.toBytes(value);
+		
 	}
 
 	public Collection<CassandraColumn> getCassandraColumns(T entity) {
@@ -63,8 +64,12 @@ public final class EntityProcessor<T> {
 
 			Field field = columnProcessor.getColumnField(columnName);
 			Transformer transformer = columnProcessor.getColumnTransformer(columnName);
-			CassandraColumn column = new CassandraColumn(columnName, getFieldValueInBytes(entity, field, transformer));
-			columns.add(column);
+			byte[] value = getFieldValueInBytes(entity, field, transformer);
+			
+			if(value != null) {
+				CassandraColumn column = new CassandraColumn(columnName, value);
+				columns.add(column);
+			}
 		}
 
 		return columns;

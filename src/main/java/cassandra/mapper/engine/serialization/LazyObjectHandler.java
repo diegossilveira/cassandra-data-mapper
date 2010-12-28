@@ -41,6 +41,12 @@ public class LazyObjectHandler implements MethodInterceptor {
 		}
 
 		LazyColumnInfo lazyColumnInfo = columnMap.get(field);
+		
+		if(lazyColumnInfo == null) {
+			
+			return methodProxy.invokeSuper(object, args);
+		}
+		
 		ReflectionUtils.setFieldValue(field, object, lazyColumnInfo.value());
 		
 		return lazyColumnInfo.value();

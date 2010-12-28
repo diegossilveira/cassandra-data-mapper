@@ -130,10 +130,13 @@ public class MapperTest {
 	@Test
 	public void testProxy() {
 		
-		for (int i = 1; i <= 100; i++) {
-			Comment comment = new Comment(toUUID(i), "diegossilveira", "Comentario de Teste " + i);
-			mapper.store(comment);
-		}
+//		for (int i = 1; i <= 100; i++) {
+//			Comment comment = new Comment(toUUID(i), "diegossilveira", "Comentario de Teste " + i);
+//			mapper.store(comment);
+//		}
+		
+		Comment comment1 = new Comment(toUUID(1), "diegossilveira", null);
+		mapper.store(comment1);
 		
 		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, FetchMode.LAZY);
 		for(Comment comment : range.elements()) {
