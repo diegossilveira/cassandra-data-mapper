@@ -15,9 +15,9 @@ public class LazyObjectHandler implements MethodInterceptor {
 
 	private final Logger logger = Logger.getLogger(LazyDeserializer.class);
 	private final Class<?> clazz;
-	private final Map<Field, Object> columnMap;
+	private final Map<Field, LazyColumnInfo> columnMap;
 
-	public LazyObjectHandler(Class<?> clazz, Map<Field, Object> columnMap) {
+	public LazyObjectHandler(Class<?> clazz, Map<Field, LazyColumnInfo> columnMap) {
 
 		this.clazz = clazz;
 		this.columnMap = columnMap;
@@ -40,9 +40,9 @@ public class LazyObjectHandler implements MethodInterceptor {
 			return methodProxy.invokeSuper(object, args);
 		}
 
-		Object value = columnMap.get(field);
-		ReflectionUtils.setFieldValue(field, object, value);
+		LazyColumnInfo lazyColumnInfo = columnMap.get(field);
+		ReflectionUtils.setFieldValue(field, object, lazyColumnInfo.value());
 		
-		return value;
+		return lazyColumnInfo.value();
 	}
 }

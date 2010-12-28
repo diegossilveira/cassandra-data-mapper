@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.api.CassandraIndexColumn;
+import cassandra.mapper.api.FetchMode;
 import cassandra.mapper.engine.EntityProcessor;
 
 import me.prettyprint.hector.api.beans.ColumnSlice;
@@ -50,7 +51,7 @@ public final class HectorCommons {
 		return ignoredKey != null && ignoredKey.toString().equals(rowKey);
 	}
 
-	static <E> E buildEntity(ColumnSlice<String, byte[]> slice, UUID key, EntityProcessor<E> processor, boolean lazy) {
+	static <E> E buildEntity(ColumnSlice<String, byte[]> slice, UUID key, EntityProcessor<E> processor, FetchMode fetchMode) {
 
 		logger.debug("Deserializing entity with key " + key);
 		
@@ -60,10 +61,10 @@ public final class HectorCommons {
 			columns.add(convert(column));
 		}
 
-		return processor.getCassandraEntity(key, columns, lazy);
+		return processor.getCassandraEntity(key, columns, fetchMode);
 	}
 
-	static <E> List<E> buildEntities(Rows<String, byte[]> rows, UUID ignoredKey, EntityProcessor<E> processor, boolean lazy) {
+	static <E> List<E> buildEntities(Rows<String, byte[]> rows, UUID ignoredKey, EntityProcessor<E> processor, FetchMode fetchMode) {
 
 		List<E> entities = new ArrayList<E>();
 		Iterator<Row<String, byte[]>> iterator = rows.iterator();
@@ -71,7 +72,7 @@ public final class HectorCommons {
 		while (iterator.hasNext()) {
 			Row<String, byte[]> row = iterator.next();
 			if (!mustIgnoreKey(ignoredKey, row.getKey())) {
-				E entity = buildEntity(row.getColumnSlice(), UUID.fromString(row.getKey()), processor, lazy);
+				E entity = buildEntity(row.getColumnSlice(), UUID.fromString(row.getKey()), processor, fetchMode);
 				entities.add(entity);
 			}
 		}

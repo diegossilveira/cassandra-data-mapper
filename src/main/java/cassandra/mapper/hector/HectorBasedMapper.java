@@ -29,6 +29,7 @@ import cassandra.mapper.api.CassandraCluster;
 import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.api.CassandraIndexColumn;
 import cassandra.mapper.api.CassandraRange;
+import cassandra.mapper.api.FetchMode;
 import cassandra.mapper.api.IndexedMapper;
 import cassandra.mapper.api.exception.CassandraMapperException;
 import cassandra.mapper.engine.EntityProcessor;
@@ -85,11 +86,11 @@ public class HectorBasedMapper implements IndexedMapper {
 	@Override
 	public <E> E findByKey(UUID key, Class<E> clazz) {
 
-		return findByKey(key, clazz, false);
+		return findByKey(key, clazz, FetchMode.EAGER);
 	}
 
 	@Override
-	public <E> E findByKey(UUID key, Class<E> clazz, boolean lazy) {
+	public <E> E findByKey(UUID key, Class<E> clazz, FetchMode fetchMode) {
 
 		logger.debug("Finding entity with key " + key);
 
@@ -101,7 +102,7 @@ public class HectorBasedMapper implements IndexedMapper {
 
 			QueryResult<ColumnSlice<String, byte[]>> result = query.execute();
 
-			return HectorCommons.buildEntity(result.get(), key, processor, lazy);
+			return HectorCommons.buildEntity(result.get(), key, processor, fetchMode);
 
 		} catch (Exception ex) {
 			throw new CassandraMapperException("Error while retrieving key", ex);
@@ -111,11 +112,11 @@ public class HectorBasedMapper implements IndexedMapper {
 	@Override
 	public <E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz) {
 
-		return findByKeys(keys, clazz, false);
+		return findByKeys(keys, clazz, FetchMode.EAGER);
 	}
 
 	@Override
-	public <E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz, boolean lazy) {
+	public <E> List<E> findByKeys(Collection<UUID> keys, Class<E> clazz, FetchMode fetchMode) {
 
 		logger.debug("Finding entities with keys " + keys);
 
@@ -129,7 +130,7 @@ public class HectorBasedMapper implements IndexedMapper {
 
 			QueryResult<Rows<String, byte[]>> result = query.execute();
 
-			return HectorCommons.buildEntities(result.get(), null, processor, lazy);
+			return HectorCommons.buildEntities(result.get(), null, processor, fetchMode);
 
 		} catch (Exception ex) {
 			throw new CassandraMapperException("Error while retrieving keys", ex);
@@ -139,11 +140,11 @@ public class HectorBasedMapper implements IndexedMapper {
 	@Override
 	public <E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size) {
 
-		return findByRange(initialKey, clazz, size, false);
+		return findByRange(initialKey, clazz, size, FetchMode.EAGER);
 	}
 
 	@Override
-	public <E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size, boolean lazy) {
+	public <E> CassandraRange<E> findByRange(UUID initialKey, Class<E> clazz, int size, FetchMode fetchMode) {
 
 		logger.debug("Finding entities within range starting at key " + initialKey);
 
@@ -166,7 +167,7 @@ public class HectorBasedMapper implements IndexedMapper {
 				logger.debug("Next key is " + lastKey);
 			}
 
-			List<E> list = HectorCommons.buildEntities(rows, lastKey, processor, lazy);
+			List<E> list = HectorCommons.buildEntities(rows, lastKey, processor, fetchMode);
 
 			return new CassandraRange<E>(list, lastKey);
 

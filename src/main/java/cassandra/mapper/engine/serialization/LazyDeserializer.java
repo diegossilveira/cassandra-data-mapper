@@ -30,17 +30,17 @@ public class LazyDeserializer<T> extends AbstractDeserializer<T> {
 		
 	}
 
-	private Map<Field, Object> prepareColumnMap(UUID key, Collection<CassandraColumn> columns) {
+	private Map<Field, LazyColumnInfo> prepareColumnMap(UUID key, Collection<CassandraColumn> columns) {
 
-		Map<Field, Object> columnMap = new HashMap<Field, Object>();
+		Map<Field, LazyColumnInfo> columnMap = new HashMap<Field, LazyColumnInfo>();
 		
-		columnMap.put(keyProcessor.keyField(), key);
+		columnMap.put(keyProcessor.keyField(), new LazyColumnInfo(key));
 		
 		for (CassandraColumn column : columns) {
 			
 			Field columnField = columnProcessor.getColumnField(column.name());
 			Transformer transformer = columnProcessor.getColumnTransformer(column.name());
-			columnMap.put(columnField, transformer.fromBytes(column.value()));
+			columnMap.put(columnField, new LazyColumnInfo(transformer, column.value()));
 		}
 		
 		return columnMap;

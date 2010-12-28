@@ -10,6 +10,7 @@ import org.apache.cassandra.thrift.ConsistencyLevel;
 
 import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.api.CassandraIndexColumn;
+import cassandra.mapper.api.FetchMode;
 import cassandra.mapper.api.Transformer;
 import cassandra.mapper.api.exception.CassandraEngineException;
 import cassandra.mapper.engine.annotation.ColumnAnnotationProcessor;
@@ -40,8 +41,9 @@ public final class EntityProcessor<T> {
 		keyProcessor = new KeyAnnotationProcessor(clazz);
 	}
 
-	private Deserializer<T> deserializer(boolean lazy) {
-		if (lazy) {
+	private Deserializer<T> deserializer(FetchMode fetchMode) {
+		
+		if (FetchMode.LAZY == fetchMode) {
 			return new LazyDeserializer<T>(clazz, columnProcessor, keyProcessor);
 		}
 		return new EagerDeserializer<T>(clazz, columnProcessor, keyProcessor);
@@ -76,12 +78,12 @@ public final class EntityProcessor<T> {
 
 	public T getCassandraEntity(UUID key, Collection<CassandraColumn> columns) {
 
-		return getCassandraEntity(key, columns, false);
+		return getCassandraEntity(key, columns, FetchMode.EAGER);
 	}
-	
-	public T getCassandraEntity(UUID key, Collection<CassandraColumn> columns, boolean lazy) {
 
-		return deserializer(lazy).deserialize(key, columns);
+	public T getCassandraEntity(UUID key, Collection<CassandraColumn> columns, FetchMode fetchMode) {
+
+		return deserializer(fetchMode).deserialize(key, columns);
 	}
 
 	public UUID getKey(T entity) {

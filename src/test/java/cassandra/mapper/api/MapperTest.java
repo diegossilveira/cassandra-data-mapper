@@ -135,8 +135,10 @@ public class MapperTest {
 			mapper.store(comment);
 		}
 		
-		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, true);
+		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, FetchMode.LAZY);
 		for(Comment comment : range.elements()) {
+			comment.id();
+			comment.author();
 			comment.text();
 			comment.date();
 		}
