@@ -61,7 +61,7 @@ public final class HectorCommons {
 			columns.add(convert(column));
 		}
 
-		return processor.getCassandraEntity(key, columns, fetchMode);
+		return columns.size() <= 0 ? null : processor.getCassandraEntity(key, columns, fetchMode);
 	}
 
 	static <E> List<E> buildEntities(Rows<String, byte[]> rows, UUID ignoredKey, EntityProcessor<E> processor, FetchMode fetchMode) {
@@ -73,7 +73,9 @@ public final class HectorCommons {
 			Row<String, byte[]> row = iterator.next();
 			if (!mustIgnoreKey(ignoredKey, row.getKey())) {
 				E entity = buildEntity(row.getColumnSlice(), UUID.fromString(row.getKey()), processor, fetchMode);
-				entities.add(entity);
+				if(entity != null) {
+					entities.add(entity);
+				}
 			}
 		}
 
