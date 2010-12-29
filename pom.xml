@@ -4,7 +4,7 @@
 
 	<groupId>cassandra-data-mapper</groupId>
 	<artifactId>cassandra-data-mapper</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<packaging>jar</packaging>
 
 	<name>cassandra-data-mapper</name>
