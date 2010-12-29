@@ -135,10 +135,11 @@ public class MapperTest {
 //			mapper.store(comment);
 //		}
 		
-		Comment comment1 = new Comment(toUUID(1), "diegossilveira", null);
+		Comment comment1 = new Comment(toUUID(2), "diegossilveira", null);
 		mapper.store(comment1);
 		
-		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, FetchMode.LAZY);
+		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, FetchMode.EAGER);
+
 		for(Comment comment : range.elements()) {
 			comment.id();
 			comment.author();

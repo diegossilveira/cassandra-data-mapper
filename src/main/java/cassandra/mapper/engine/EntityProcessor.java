@@ -42,7 +42,7 @@ public final class EntityProcessor<T> {
 	}
 
 	private Deserializer<T> deserializer(FetchMode fetchMode) {
-		
+
 		if (FetchMode.LAZY == fetchMode) {
 			return new LazyDeserializer<T>(clazz, columnProcessor, keyProcessor);
 		}
@@ -53,7 +53,6 @@ public final class EntityProcessor<T> {
 
 		Object value = ReflectionUtils.getFieldValue(field, entity);
 		return value == null ? null : transformer.toBytes(value);
-		
 	}
 
 	public Collection<CassandraColumn> getCassandraColumns(T entity) {
@@ -65,11 +64,9 @@ public final class EntityProcessor<T> {
 			Field field = columnProcessor.getColumnField(columnName);
 			Transformer transformer = columnProcessor.getColumnTransformer(columnName);
 			byte[] value = getFieldValueInBytes(entity, field, transformer);
-			
-			if(value != null) {
-				CassandraColumn column = new CassandraColumn(columnName, value);
-				columns.add(column);
-			}
+
+			CassandraColumn column = new CassandraColumn(columnName, value);
+			columns.add(column);
 		}
 
 		return columns;
@@ -87,7 +84,7 @@ public final class EntityProcessor<T> {
 	}
 
 	public T getCassandraEntity(UUID key, Collection<CassandraColumn> columns, FetchMode fetchMode) {
-
+		
 		return deserializer(fetchMode).deserialize(key, columns);
 	}
 

@@ -9,7 +9,7 @@ import org.junit.Before;
 
 import cassandra.mapper.engine.utils.TimeUUIDUtils;
 import cassandra.mapper.entity.example.Comment;
-import cassandra.mapper.hector.HectorBasedMapper;
+import cassandra.mapper.hector.HectorBasedIndexedMapper;
 
 public class IndexedMapperTest {
 
@@ -23,7 +23,7 @@ public class IndexedMapperTest {
 		cluster.addNode(new CassandraNode("10.10.0.69", 9160));
 		cluster.addNode(new CassandraNode("10.10.0.70", 9160));
 
-		mapper = new HectorBasedMapper(cluster);
+		mapper = new HectorBasedIndexedMapper(cluster);
 	}
 	
 	private UUID toUUID(int num) {
