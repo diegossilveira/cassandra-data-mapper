@@ -17,6 +17,7 @@ import cassandra.mapper.engine.annotation.ColumnAnnotationProcessor;
 import cassandra.mapper.engine.annotation.EntityAnnotationProcessor;
 import cassandra.mapper.engine.annotation.IndexAnnotationProcessor;
 import cassandra.mapper.engine.annotation.KeyAnnotationProcessor;
+import cassandra.mapper.engine.annotation.TransformedAnnotationProcessor;
 import cassandra.mapper.engine.serialization.Deserializer;
 import cassandra.mapper.engine.serialization.EagerDeserializer;
 import cassandra.mapper.engine.serialization.LazyDeserializer;
@@ -29,6 +30,7 @@ public final class EntityProcessor<T> {
 
 	private final EntityAnnotationProcessor entityProcessor;
 	private final ColumnAnnotationProcessor columnProcessor;
+	private final TransformedAnnotationProcessor transformedProcessor;
 	private final IndexAnnotationProcessor indexProcessor;
 	private final KeyAnnotationProcessor keyProcessor;
 
@@ -37,6 +39,7 @@ public final class EntityProcessor<T> {
 		this.clazz = clazz;
 		entityProcessor = new EntityAnnotationProcessor(clazz);
 		columnProcessor = new ColumnAnnotationProcessor(clazz);
+		transformedProcessor = new TransformedAnnotationProcessor(clazz);
 		indexProcessor = new IndexAnnotationProcessor(clazz);
 		keyProcessor = new KeyAnnotationProcessor(clazz);
 	}
@@ -44,9 +47,9 @@ public final class EntityProcessor<T> {
 	private Deserializer<T> deserializer(FetchMode fetchMode) {
 
 		if (FetchMode.LAZY == fetchMode) {
-			return new LazyDeserializer<T>(clazz, columnProcessor, keyProcessor);
+			return new LazyDeserializer<T>(clazz, columnProcessor, transformedProcessor, keyProcessor);
 		}
-		return new EagerDeserializer<T>(clazz, columnProcessor, keyProcessor);
+		return new EagerDeserializer<T>(clazz, columnProcessor, transformedProcessor, keyProcessor);
 	}
 
 	private byte[] getFieldValueInBytes(T entity, Field field, Transformer transformer) {
@@ -62,7 +65,7 @@ public final class EntityProcessor<T> {
 		for (String columnName : columnProcessor.columnNames()) {
 
 			Field field = columnProcessor.getColumnField(columnName);
-			Transformer transformer = columnProcessor.getColumnTransformer(columnName);
+			Transformer transformer = transformedProcessor.getColumnTransformer(field);
 			byte[] value = getFieldValueInBytes(entity, field, transformer);
 
 			CassandraColumn column = new CassandraColumn(columnName, value);

@@ -8,12 +8,14 @@ import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.api.Transformer;
 import cassandra.mapper.engine.annotation.ColumnAnnotationProcessor;
 import cassandra.mapper.engine.annotation.KeyAnnotationProcessor;
+import cassandra.mapper.engine.annotation.TransformedAnnotationProcessor;
 import cassandra.mapper.engine.utils.ReflectionUtils;
 
 public class EagerDeserializer<T> extends AbstractDeserializer<T> {
 
-	public EagerDeserializer(Class<T> clazz, ColumnAnnotationProcessor columnProcessor, KeyAnnotationProcessor keyProcessor) {
-		super(clazz, columnProcessor, keyProcessor);
+	public EagerDeserializer(Class<T> clazz, ColumnAnnotationProcessor columnProcessor,
+			TransformedAnnotationProcessor transformedProcessor, KeyAnnotationProcessor keyProcessor) {
+		super(clazz, columnProcessor, transformedProcessor, keyProcessor);
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class EagerDeserializer<T> extends AbstractDeserializer<T> {
 		for (CassandraColumn column : columns) {
 
 			Field columnField = columnProcessor.getColumnField(column.name());
-			Transformer transformer = columnProcessor.getColumnTransformer(column.name());
+			Transformer transformer = transformedProcessor.getColumnTransformer(columnField);
 			setFieldValueFromBytes(entity, columnField, column.value(), transformer);
 		}
 

@@ -7,11 +7,13 @@ import net.sf.cglib.proxy.Enhancer;
 import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.engine.annotation.ColumnAnnotationProcessor;
 import cassandra.mapper.engine.annotation.KeyAnnotationProcessor;
+import cassandra.mapper.engine.annotation.TransformedAnnotationProcessor;
 
 public class LazyDeserializer<T> extends AbstractDeserializer<T> {
 
-	public LazyDeserializer(Class<T> clazz, ColumnAnnotationProcessor columnProcessor, KeyAnnotationProcessor keyProcessor) {
-		super(clazz, columnProcessor, keyProcessor);
+	public LazyDeserializer(Class<T> clazz, ColumnAnnotationProcessor columnProcessor, TransformedAnnotationProcessor transformedProcessor,
+			KeyAnnotationProcessor keyProcessor) {
+		super(clazz, columnProcessor, transformedProcessor, keyProcessor);
 	}
 
 	@Override
@@ -19,7 +21,7 @@ public class LazyDeserializer<T> extends AbstractDeserializer<T> {
 	public T deserialize(UUID key, Collection<CassandraColumn> columns) {
 
 		LazyObjectHandler objectHandler = LazyObjectHandler.BUILDER.forClass(clazz).key(key).onColumns(columns).with(columnProcessor)
-				.with(keyProcessor).build();
+				.with(transformedProcessor).with(keyProcessor).build();
 
 		Enhancer enhacer = new Enhancer();
 		enhacer.setSuperclass(clazz);

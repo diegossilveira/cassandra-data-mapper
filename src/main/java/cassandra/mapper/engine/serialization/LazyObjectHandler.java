@@ -16,6 +16,7 @@ import cassandra.mapper.api.CassandraColumn;
 import cassandra.mapper.api.Transformer;
 import cassandra.mapper.engine.annotation.ColumnAnnotationProcessor;
 import cassandra.mapper.engine.annotation.KeyAnnotationProcessor;
+import cassandra.mapper.engine.annotation.TransformedAnnotationProcessor;
 import cassandra.mapper.engine.utils.ReflectionUtils;
 
 public class LazyObjectHandler implements MethodInterceptor {
@@ -24,6 +25,7 @@ public class LazyObjectHandler implements MethodInterceptor {
 	private final Class<?> clazz;
 	private final UUID key;
 	private final ColumnAnnotationProcessor columnProcessor;
+	private final TransformedAnnotationProcessor transformedProcessor;
 	private final KeyAnnotationProcessor keyProcessor;
 	private final List<CassandraColumn> columns;
 	
@@ -33,6 +35,7 @@ public class LazyObjectHandler implements MethodInterceptor {
 		this.clazz = builder.clazz;
 		this.key = builder.key;
 		this.columnProcessor = builder.columnProcessor;
+		this.transformedProcessor = builder.transformedProcessor;
 		this.keyProcessor = builder.keyProcessor;
 		this.columns = new ArrayList<CassandraColumn>(builder.columns);
 	}
@@ -92,7 +95,7 @@ public class LazyObjectHandler implements MethodInterceptor {
 		}
 		
 		column = columns.get(columnIndex);
-		Transformer transformer = columnProcessor.getColumnTransformer(column.name());
+		Transformer transformer = transformedProcessor.getColumnTransformer(field);
 		return transformer.fromBytes(column.value());
 	}
 	
@@ -106,6 +109,7 @@ public class LazyObjectHandler implements MethodInterceptor {
 		private Class<?> clazz;
 		private UUID key;
 		private ColumnAnnotationProcessor columnProcessor;
+		private TransformedAnnotationProcessor transformedProcessor;
 		private KeyAnnotationProcessor keyProcessor;
 		private Collection<CassandraColumn> columns;
 
@@ -125,6 +129,11 @@ public class LazyObjectHandler implements MethodInterceptor {
 
 		public Builder with(ColumnAnnotationProcessor columnProcessor) {
 			this.columnProcessor = columnProcessor;
+			return this;
+		}
+		
+		public Builder with(TransformedAnnotationProcessor transformedProcessor) {
+			this.transformedProcessor = transformedProcessor;
 			return this;
 		}
 

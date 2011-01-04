@@ -7,7 +7,6 @@ import cassandra.mapper.api.annotation.Column;
 import cassandra.mapper.api.annotation.Entity;
 import cassandra.mapper.api.annotation.Index;
 import cassandra.mapper.api.annotation.Key;
-import cassandra.mapper.transformer.DateTransformer;
 
 @Entity(keyspace = "CommentKeyspace", columnFamily = "Comment")
 public class Comment {
@@ -19,8 +18,10 @@ public class Comment {
 	private final String author;
 	@Column
 	private String text;
-	@Column(transformer=DateTransformer.class)
+	@Column
 	private final Date date = new Date();
+	@Column
+	private int count = 10;
 
 	public Comment() {
 		this(null, "");
@@ -54,6 +55,18 @@ public class Comment {
 
 	public Date date() {
 		return date;
+	}
+
+	public int count() {
+		return count;
+	}
+
+	public void incrementCount() {
+		this.count++;
+	}
+
+	public void decrementCount() {
+		this.count--;
 	}
 
 	@Override

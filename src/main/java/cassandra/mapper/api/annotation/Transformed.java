@@ -5,11 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import cassandra.mapper.api.Transformer;
 
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Column {
+public @interface Transformed {
 
-	String name() default "";
-	
+	Class<? extends Transformer> transformer();
+
 }

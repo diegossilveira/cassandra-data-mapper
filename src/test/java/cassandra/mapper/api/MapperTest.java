@@ -136,18 +136,23 @@ public class MapperTest {
 //		}
 		
 		Comment comment1 = new Comment(toUUID(2), "diegossilveira", null);
+		comment1.decrementCount();
 		mapper.store(comment1);
 		
-		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, FetchMode.EAGER);
-
-		for(Comment comment : range.elements()) {
-			comment.id();
-			comment.author();
-			comment.text();
-			comment.date();
-		}
+		System.out.println(toUUID(2));
 		
-		assertEquals(100, range.size());
+		comment1 = mapper.findByKey(toUUID(2), Comment.class);
+		
+//		CassandraRange<Comment> range = mapper.findByRange(null, Comment.class, 100, FetchMode.EAGER);
+//
+//		for(Comment comment : range.elements()) {
+//			comment.id();
+//			comment.author();
+//			comment.text();
+//			comment.date();
+//		}
+//		
+//		assertEquals(100, range.size());
 	}
 
 }
