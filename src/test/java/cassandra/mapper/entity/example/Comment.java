@@ -21,7 +21,7 @@ public class Comment {
 	@Column
 	private final Date date = new Date();
 	@Column
-	private int count = 10;
+	private Integer count = 10;
 
 	public Comment() {
 		this(null, "");
