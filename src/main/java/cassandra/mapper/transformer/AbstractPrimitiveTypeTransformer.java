@@ -10,6 +10,18 @@ import cassandra.mapper.api.exception.TransformerException;
 
 public abstract class AbstractPrimitiveTypeTransformer implements Transformer {
 
+	public byte[] toBytes(boolean value) {
+
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos);
+			dos.writeBoolean(value);
+			return baos.toByteArray();
+		} catch (Exception ex) {
+			throw new TransformerException(ex);
+		}
+	}
+	
 	public byte[] toBytes(short value) {
 
 		try {
@@ -65,6 +77,15 @@ public abstract class AbstractPrimitiveTypeTransformer implements Transformer {
 			DataOutputStream dos = new DataOutputStream(baos);
 			dos.writeDouble(value);
 			return baos.toByteArray();
+		} catch (Exception ex) {
+			throw new TransformerException(ex);
+		}
+	}
+	
+	public Boolean fromBooleanBytes(byte[] bytes) {
+
+		try {
+			return forBytes(bytes).readBoolean();
 		} catch (Exception ex) {
 			throw new TransformerException(ex);
 		}

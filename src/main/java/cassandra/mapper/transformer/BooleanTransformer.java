@@ -9,7 +9,7 @@ public class BooleanTransformer extends AbstractPrimitiveTypeTransformer {
 
 		try {
 			
-			int value = ((Integer) object).intValue();
+			boolean value = ((Boolean) object).booleanValue();
 			return toBytes(value);
 
 		} catch (Exception ex) {
@@ -19,14 +19,14 @@ public class BooleanTransformer extends AbstractPrimitiveTypeTransformer {
 	}
 
 	@Override
-	public Integer fromBytes(byte[] bytes) {
+	public Boolean fromBytes(byte[] bytes) {
 
 		try {
 
-			return fromIntegertBytes(bytes);
+			return fromBooleanBytes(bytes);
 
 		} catch (Exception ex) {
-			throw new TransformerException("Unable to transform byte[] into Integer", ex);
+			throw new TransformerException("Unable to transform byte[] into Boolean", ex);
 		}
 	}
 
